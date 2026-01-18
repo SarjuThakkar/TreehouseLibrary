@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h1>Edit Book</h1>
+    <p>ISBN: <strong>{{ book.isbn }}</strong></p>
+
+    <form action="/admin/book/{{ book.isbn }}/edit" method="post">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" id="title" name="title" value="{{ book.title }}" required autofocus>
+
+        <label for="author" class="form-label">Author</label>
+        <input type="text" id="author" name="author" value="{{ book.author }}" required>
+
+        <label for="our_review" class="form-label">Our Review</label>
+        <textarea id="our_review" name="our_review" rows="3">{{ book.our_review or '' }}</textarea>
+
+        <label for="our_rating" class="form-label">Our Rating (1-5)</label>
+        <div class="js-star-rating mb-2" data-name="our_rating" data-value="{{ book.our_rating or 0 }}"></div>
+
+        <div class="form-actions">
+            <a href="/admin" class="btn-cancel">Cancel</a>
+            <button type="submit" class="btn-flex">Save Changes</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

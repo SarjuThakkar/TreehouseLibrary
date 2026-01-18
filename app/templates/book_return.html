@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h1>Return Book</h1>
+    <h2 class="book-title">{{ book.title }}</h2>
+
+    <p class="mb-2">We hope you enjoyed it! Please leave a rating.</p>
+
+    <form action="/book/{{ book.isbn }}/return" method="post">
+        {% if patron_name %}
+        <div class="patron-welcome">
+            Welcome back, <strong>{{ patron_name }}</strong>!
+        </div>
+        {% endif %}
+
+        <label for="star_rating" class="form-label">Rating</label>
+        <div class="js-star-rating mb-2" data-name="star_rating" data-value="0"></div>
+
+        <label for="review_content" class="form-label mt-1">Review</label>
+        <textarea id="review_content" name="review_content" rows="3" placeholder="What did you think?"></textarea>
+
+        <button type="submit" style="margin-top: 1.5rem;">Return & Save</button>
+    </form>
+
+    <div class="mt-1">
+        <a href="/" class="link-cancel">Cancel</a>
+    </div>
+</div>
+{% endblock %}

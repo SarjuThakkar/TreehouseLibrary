@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h1>Add New Book</h1>
+    <p>ISBN: <strong>{{ isbn }}</strong></p>
+    <p id="api-status" class="text-muted" style="font-size: 0.9rem;">Looking up book info...</p>
+
+    <form action="/book/{{ isbn }}/add" method="post">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" id="title" name="title" required autofocus>
+
+        <label for="author" class="form-label">Author</label>
+        <input type="text" id="author" name="author" required>
+
+        <label for="our_review" class="form-label">Our
+            Review</label>
+        <textarea id="our_review" name="our_review" rows="3"></textarea>
+
+        <label for="our_rating" class="form-label">Our
+            Rating (1-5)</label>
+        <div class="js-star-rating mb-2" data-name="our_rating" data-value="0"></div>
+
+        <div class="form-actions">
+            <a href="/" class="btn-cancel">Cancel</a>
+            <button type="submit" class="btn-flex">Save Book</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const isbn = '{{ isbn }}';
+        const titleInput = document.getElementById('title');
+        const authorInput = document.getElementById('author');
+        const statusEl = document.getElementById('api-status');
+
+        // Clean ISBN - remove any dashes or spaces
+        const cleanIsbn = isbn.replace(/[-\s]/g, '');
+
+        try {
+            // Try the Open Library Search API which tends to be more reliable
+            const res = await fetch(`https://openlibrary.org/search.json?isbn=${cleanIsbn}&limit=1`);
+            if (!res.ok) throw new Error('API request failed');
+
+            const data = await res.json();
+
+            if (data.docs && data.docs.length > 0) {
+                const book = data.docs[0];
+
+                if (book.title) {
+                    titleInput.value = book.title;
+                }
+
+                if (book.author_name && book.author_name.length > 0) {
+                    authorInput.value = book.author_name.join(', ');
+                }
+
+                statusEl.textContent = '✓ Book info found!';
+                statusEl.style.color = '#27ae60';
+            } else {
+                statusEl.textContent = 'Book not found in database. Please enter details manually.';
+                statusEl.style.color = '#e67e22';
+            }
+        } catch (err) {
+            console.error('Open Library API error:', err);
+            statusEl.textContent = 'Could not look up book. Please enter details manually.';
+            statusEl.style.color = '#e74c3c';
+        }
+    });
+</script>
+{% endblock %}

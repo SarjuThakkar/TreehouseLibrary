@@ -1,0 +1,343 @@
+:root {
+    --bg-color: #fcf8f2;
+    --text-color: #2c3e50;
+    --accent-color: #27ae60;
+    --card-bg: #ffffff;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Outfit', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+main {
+    width: 100%;
+    max-width: 800px;
+    padding: 2rem;
+    text-align: center;
+}
+
+h1 {
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 2rem;
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+textarea,
+select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #219150;
+}
+
+.hidden-input {
+    opacity: 0;
+    position: absolute;
+    top: -1000px;
+}
+
+.flash-message {
+    padding: 1rem;
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+/* Specific to lists */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: #f9fafb;
+    margin-bottom: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    text-align: left;
+}
+
+/* Utility & Semantic Classes */
+.text-left {
+    text-align: left;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-1 {
+    margin-top: 1rem;
+}
+
+.mt-2 {
+    margin-top: 2rem;
+}
+
+.mb-1 {
+    margin-bottom: 1rem;
+}
+
+.mb-2 {
+    margin-bottom: 2rem;
+}
+
+.mb-05 {
+    margin-bottom: 0.5rem;
+}
+
+/* Subtitles & Text */
+.subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.hero-icon {
+    /* font-size: 5rem; Removed for image logo */
+    color: #ddd;
+    margin-bottom: 2rem;
+}
+
+.attribution {
+    font-size: 1rem;
+    color: #888;
+    margin-top: -1.5rem;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+}
+
+.text-muted {
+    color: #666;
+}
+
+.text-light {
+    color: #999;
+}
+
+.text-subtle {
+    color: #ccc;
+}
+
+/* Form Elements */
+.form-label {
+    display: block;
+    text-align: left;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-actions {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-cancel {
+    flex: 1;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-flex {
+    flex: 2;
+}
+
+.btn-sm {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+}
+
+/* Components */
+.review-box {
+    background: #fdf6e3;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    text-align: left;
+}
+
+.review-rating {
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 2rem 0;
+}
+
+.jump-checkout-wrapper {
+    text-align: left;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.btn-jump-checkout {
+    background-color: transparent;
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: auto;
+}
+
+.btn-jump-checkout:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.author-subtitle {
+    color: #666;
+    font-weight: 400;
+    margin-top: -1rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Patrons & Admin */
+.patron-reviews-section {
+    text-align: left;
+    margin-bottom: 2rem;
+}
+
+.patron-welcome {
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    color: #555;
+}
+
+.checkout-item {
+    border: 1px solid #eee;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+}
+
+.book-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--accent-color);
+}
+
+.checkout-details {
+    font-size: 0.9rem;
+}
+
+.link-subtle {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+.link-cancel {
+    color: #999;
+    text-decoration: none;
+}
+
+.link-accent {
+    text-decoration: none;
+    color: var(--accent-color);
+}
+
+/* Star Rating Component */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+.star-rating label {
+    font-size: 2rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+    margin: 0;
+}
+
+.star-rating label:hover,
+.star-rating label:hover~label,
+.star-rating input[type="radio"]:checked~label {
+    color: #f1c40f;
+}
+
+.star-rating input[type="radio"]:checked+label {
+    color: #f1c40f;
+}
+
+/* JS Star Rating */
+.stars-wrapper {
+    display: flex;
+    gap: 0.25rem;
+    cursor: pointer;
+    font-size: 3rem;
+    justify-content: center;
+}
+
+.star-item {
+    color: #ddd;
+    transition: color 0.1s;
+}

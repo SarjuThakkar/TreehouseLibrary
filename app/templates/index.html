@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h1>The Treehouse Library</h1>
+    <p class="attribution">By Sarju and Maitree</p>
+    <div class="hero-icon">
+        <img src="/static/logo.png" alt="Treehouse Library Logo" style="max-width: 200px; height: auto;">
+    </div>
+    <p class="subtitle">Scan a book to begin</p>
+
+    <form action="/scan" method="post">
+        <input type="text" id="scan-input" name="isbn" class="hidden-input" autocomplete="off" autofocus>
+        <button type="submit" style="display: none;">Submit</button> <!-- Hidden submit for scanner Enter key -->
+    </form>
+</div>
+
+<div class="mt-2">
+    <a href="/admin" class="link-subtle">Admin</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="/static/script.js"></script>
+{% endblock %}

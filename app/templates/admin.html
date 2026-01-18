@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h1>Admin Dashboard</h1>
+
+    <div class="text-left">
+        <h2>Active Checkouts</h2>
+        {% if checkouts %}
+        <ul>
+            {% for checkout in checkouts %}
+            <li class="checkout-item">
+                <div class="book-title">
+                    {{ checkout.book.title }}
+                </div>
+                <div class="text-muted mb-05">
+                    by {{ checkout.book.author }}
+                </div>
+                <div class="checkout-details">
+                    <strong>Patron:</strong> {{ checkout.patron.name }} ({{ checkout.patron.email }})<br>
+                    <strong>Checked Out:</strong> {{ checkout.checked_out_at.strftime('%Y-%m-%d %H:%M') }}<br>
+                    <strong>Days Checked Out:</strong> {{ (now - checkout.checked_out_at).days }} days
+                </div>
+
+                <form action="/admin/return/{{ checkout.id }}" method="post" class="mt-1">
+                    <button type="submit" class="btn-sm btn-danger">Mark
+                        Returned</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No active checkouts.</p>
+        {% endif %}
+    </div>
+
+    <div class="text-left mt-2" style="border-top: 1px solid #eee; padding-top: 2rem;">
+        <h2>Checkout/Checkin History</h2>
+        {% if history %}
+        <ul>
+            {% for checkout in history %}
+            <li class="checkout-item">
+                <div class="book-title">
+                    {{ checkout.book.title if checkout.book else "Unknown Book" }}
+                </div>
+                <div class="text-muted mb-05">
+                    Patron: {{ checkout.patron.name if checkout.patron else "Unknown" }}
+                </div>
+                <div class="checkout-details">
+                    <strong>Checked Out:</strong> {{ checkout.checked_out_at.strftime('%Y-%m-%d %H:%M') }}
+                    {% if checkout.returned_at %}
+                    <br><strong>Returned:</strong> {{ checkout.returned_at.strftime('%Y-%m-%d %H:%M') }}
+                    <span style="color: green; font-weight: bold;">✓ RETURNED</span>
+                    {% else %}
+                    <span style="color: orange; font-weight: bold;">• ACTIVE</span>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted">No checkout history yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="text-left mt-2" style="border-top: 1px solid #eee; padding-top: 2rem;">
+        <h2>Library Catalog</h2>
+        {% if books %}
+        <ul>
+            {% for book in books %}
+            <li class="checkout-item">
+                <div class="book-title">
+                    {{ book.title }}
+                </div>
+                <div class="text-muted mb-05">
+                    by {{ book.author }}
+                </div>
+                <div class="checkout-details">
+                    <strong>ISBN:</strong> {{ book.isbn }}<br>
+                    {% if book.our_rating %}
+                    <strong>Rating:</strong> {% for i in range(book.our_rating) %}⭐{% endfor %}
+                    {% endif %}
+                </div>
+                <div class="mt-1" style="display: flex; gap: 0.5rem;">
+                    <a href="/admin/book/{{ book.isbn }}/edit" class="btn-sm"
+                        style="background-color: var(--accent-color); color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px;">Edit</a>
+                    <form action="/admin/book/{{ book.isbn }}/delete" method="post" style="margin: 0;"
+                        onsubmit="return confirm('Are you sure you want to delete this book?');">
+                        <button type="submit" class="btn-sm btn-danger">Delete</button>
+                    </form>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted">No books in the library yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="text-left mt-2" style="border-top: 1px solid #eee; padding-top: 2rem;">
+        <h2>Recent Reminders Sent</h2>
+        {% if logs %}
+        <ul>
+            {% for log in logs %}
+            <li class="checkout-item">
+                <div class="book-title">
+                    {{ log.checkout.book.title if log.checkout and log.checkout.book else "Unknown Book" }}
+                </div>
+                <div class="text-muted mb-05">
+                    To: {{ log.checkout.patron.name if log.checkout and log.checkout.patron else "Unknown Patron" }}
+                    ({{ log.checkout.patron.email if log.checkout and log.checkout.patron else "?" }})
+                </div>
+                <div class="checkout-details">
+                    <strong>Sent At:</strong> {{ log.sent_at.strftime('%Y-%m-%d %H:%M:%S') }}<br>
+                    <strong>Status:</strong>
+                    <span style="color: {{ 'green' if log.status == 'sent' else 'red' }}; font-weight: bold;">
+                        {{ log.status.upper() }}
+                    </span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted">No reminders sent yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="text-left mt-2" style="border-top: 1px solid #eee; padding-top: 2rem;">
+    <h2>Text Blast</h2>
+    <p class="text-muted">Send a message to all patrons.</p>
+    <form action="/admin/blast" method="post"
+        onsubmit="event.preventDefault(); showModal(this, 'Send Text Blast', 'Are you sure you want to message everyone?', 'btn-primary');">
+        <input type="text" name="subject" class="mb-1" placeholder="Subject"
+            style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem;" required>
+        <textarea name="message" class="mb-1" rows="3" required placeholder="Type your message here..."></textarea>
+        <button type="submit">Send Blast</button>
+    </form>
+</div>
+
+<div class="text-left mt-2" style="border-top: 1px solid #eee; padding-top: 2rem;">
+    <h2>Manual Triggers</h2>
+    <p class="text-muted">Manually run scheduled tasks.</p>
+    <div style="display: flex; gap: 1rem;">
+        <form action="/admin/trigger-overdue-check" method="post" style="margin: 0; flex: 1;"
+            onsubmit="event.preventDefault(); showModal(this, 'Check Overdue Books', 'Run overdue check now? Emails will be sent to patrons with overdue books.', 'btn-warning');">
+            <button type="submit" class="btn-warning" style="width: 100%;">Check Overdue Books Now</button>
+        </form>
+        <form action="/admin/trigger-newsletter" method="post" style="margin: 0; flex: 1;"
+            onsubmit="event.preventDefault(); showModal(this, 'Send Monthly Newsletter', 'Send monthly newsletter now? Emails will be sent to ALL patrons.', 'btn-info');">
+            <button type="submit" class="btn-info" style="width: 100%;">Send Monthly Newsletter Now</button>
+        </form>
+    </div>
+</div>
+
+<div class="mt-2">
+    <a href="/" class="link-accent">← Back to Home</a>
+</div>
+</div>
+<!-- Custom Confirmation Modal -->
+<div id="confirmationModal" class="modal"
+    style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+    <div class="modal-content"
+        style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 8px;">
+        <h3 id="modalTitle">Confirm Action</h3>
+        <p id="modalMessage">Are you sure?</p>
+        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 20px;">
+            <button onclick="closeModal()" style="background-color: #eee; color: #333;">Cancel</button>
+            <button id="modalConfirmBtn" class="btn-warning">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const modal = document.getElementById("confirmationModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalMessage = document.getElementById("modalMessage");
+    const modalConfirmBtn = document.getElementById("modalConfirmBtn");
+    let currentForm = null;
+
+    function showModal(form, title, message, btnClass) {
+        currentForm = form;
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+
+        modalConfirmBtn.className = btnClass || 'btn-primary';
+
+        modalConfirmBtn.onclick = function () {
+            if (currentForm) currentForm.submit();
+            closeModal();
+        };
+
+        modal.style.display = "block";
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+        currentForm = null;
+    }
+
+    // Close on outside click
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+</script>
+
+{% endblock %}

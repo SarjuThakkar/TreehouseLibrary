@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h1>{{ book.title }}</h1>
+    <h3 class="author-subtitle">by {{ book.author }}</h3>
+
+    <div class="jump-checkout-wrapper">
+        <button onclick="document.getElementById('checkout-section').scrollIntoView({behavior: 'smooth'})"
+            class="btn-jump-checkout">
+            Jump to Checkout ↓
+        </button>
+    </div>
+
+    <div class="review-box">
+        <strong>Our Review:</strong>
+        <p>{{ book.our_review if book.our_review else "No review yet." }}</p>
+        <div class="review-rating">
+            {% if book.our_rating %}
+            {% for i in range(book.our_rating) %}⭐{% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Patron Reviews -->
+    <div class="patron-reviews-section">
+        <h4>Friends' Reviews</h4>
+        {% if book.ratings %}
+        <ul>
+            {% for rating in book.ratings %}
+            {% if rating.star_rating and rating.star_rating > 0 %}
+            <li>
+                <div class="review-header">
+                    <strong>{{ rating.patron_name }}</strong>
+                    <span>{% for i in range(rating.star_rating) %}⭐{% endfor %}</span>
+                </div>
+                {% if rating.review_content %}
+                <p class="mt-05 text-muted" style="margin: 0">{{ rating.review_content }}</p>
+                {% endif %}
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-light" style="font-style: italic;">No patron reviews yet.</p>
+        {% endif %}
+    </div>
+
+    <hr class="divider">
+
+    <div id="checkout-section">
+        <h2>Check This Book Out</h2>
+        <form action="/book/{{ book.isbn }}/checkout" method="post">
+            <label for="patron_name" class="form-label">Your
+                Name</label>
+            <input type="text" id="patron_name" name="patron_name" required list="patron-list" autocomplete="off">
+            <datalist id="patron-list"></datalist>
+
+            <label for="email" class="form-label">Email
+                Address</label>
+            <input type="email" id="email" name="email" required>
+
+            <button type="submit">Check Out</button>
+        </form>
+
+        <div class="mt-1">
+            <a href="/" class="link-cancel">Cancel</a>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const nameInput = document.getElementById('patron_name');
+                const emailInput = document.getElementById('email');
+                const patronList = document.getElementById('patron-list');
+
+                if (!nameInput || !patronList) {
+                    console.error("Autofill elements not found");
+                    return;
+                }
+
+                console.log("Autofill script loaded");
+
+                nameInput.addEventListener('input', async (e) => {
+                    const val = e.target.value;
+                    console.log("Input:", val);
+
+                    if (val.length < 2) return;
+
+                    try {
+                        const res = await fetch(`/api/patrons?q=${encodeURIComponent(val)}`);
+                        if (!res.ok) throw new Error("API error");
+                        const patrons = await res.json();
+
+                        console.log("Patrons found:", patrons);
+
+                        patronList.innerHTML = '';
+                        patrons.forEach(p => {
+                            const opt = document.createElement('option');
+                            opt.value = p.name;
+                            // For datalist, we match by value. 
+                            patronList.appendChild(opt);
+                        });
+
+                        // Auto-fill email if exact match
+                        const selected = patrons.find(p => p.name === val);
+                        if (selected) {
+                            console.log("Match found", selected);
+                            if (emailInput) emailInput.value = selected.email;
+                        }
+                    } catch (err) {
+                        console.error("Autofill error:", err);
+                    }
+                });
+            });
+        </script>
+    </div>
+</div>
+{% endblock %}
