@@ -16,6 +16,22 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+
+    /* Touchscreen Kiosk Optimization */
+    overflow: hidden;
+    /* Body itself doesn't scroll, content wrappers do */
+    -webkit-user-select: none;
+    /* Prevent text selection highlighting */
+    user-select: none;
+    -webkit-touch-callout: none;
+    /* Prevent context menu on long press */
+}
+
+/* Ensure inputs describe their own behavior to override body defaults */
+input,
+textarea {
+    -webkit-user-select: text;
+    user-select: text;
 }
 
 main {
@@ -23,6 +39,17 @@ main {
     max-width: 800px;
     padding: 2rem;
     text-align: center;
+
+    /* Scrollable Content Area */
+    height: 100vh;
+    overflow-y: auto;
+    /* Scrollable vertical area */
+    -webkit-overflow-scrolling: touch;
+    /* Momentum scrolling */
+    touch-action: pan-y;
+    /* Pan vertical */
+    box-sizing: border-box;
+    /* Ensure padding doesn't affect width/height calc */
 }
 
 h1 {
